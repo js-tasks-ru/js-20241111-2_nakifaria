@@ -9,7 +9,10 @@ export function createGetter(path) {
   
   return function(obj) {
     return result.reduce((acc, part) => {
-      return acc ? acc[part] : undefined;
+      if (acc && acc.hasOwnProperty(part)) {
+        return acc[part];
+      }
+      return undefined;
     }, obj);
   };
 }
