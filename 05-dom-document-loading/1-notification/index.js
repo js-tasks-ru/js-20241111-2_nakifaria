@@ -1,6 +1,7 @@
 export default class NotificationMessage {
-    element
-    constructor (text, {duration = 0, type = ""}) {
+    static lastShownComponent;
+
+    constructor (text, {duration = 0, type = ""} = {}) {
       this.text = text;
       this.duration = duration;
       this.type = type;
@@ -27,10 +28,19 @@ export default class NotificationMessage {
             `);
     }
 
-    show() {
-      this.createElement(this.createTemplate());
-      setTimeout(() => {}, this.duration);
-      this.destroy();
+    show(targetElement) {
+      if (NotificationMessage.lastShownComponent) {
+        NotificationMessage.lastShownComponent.destroy();
+      }
+      NotificationMessage.lastShownComponent = this;
+
+      if (targetElement) {
+        targetElement.appendChild(this.element);
+      } else {document.body.appendChild(this.element);}
+      
+      setTimeout(() => {
+        this.destroy(); 
+      }, this.duration);
     }
 
     remove () {
