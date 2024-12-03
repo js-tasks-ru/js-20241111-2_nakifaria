@@ -24,29 +24,31 @@ export default class SortableTable {
 
   sort(field, sortStyle) {
     if (this.headerConfig.find(item => item.id === field)) {
-      if (sortStyle === 'asc') {
-        this.data.sort((a, b) => {
-          if (typeof a[field] === 'string' && typeof b[field] === 'string') {
-            return a[field].localeCompare(b[field], ['ru', 'en'], { caseFirst: 'upper' });
-          }
-          return a[field] - b[field]; 
-        });
-      } else if (sortStyle === 'desc') {
-        this.data.sort((a, b) => {
-          if (typeof a[field] === 'string' && typeof b[field] === 'string') {
-            return b[field].localeCompare(a[field], ['ru', 'en'], { caseFirst: 'upper' });
-          }
-          return b[field] - a[field]; 
-        });
-      }
+      this.sortElementByStyle(field, sortStyle);
     }
-
     const body = this.subElements.body;
-    body.innerHTML = this.createBody();
+    body.innerHTML = this.createBodyTemplate();
   }
 
+  sortElementByStyle(field, sortStyle) {
+    if (sortStyle === 'asc') {
+      this.data.sort((a, b) => {
+        if (typeof a[field] === 'string' && typeof b[field] === 'string') {
+          return a[field].localeCompare(b[field], ['ru', 'en'], { caseFirst: 'upper' });
+        }
+        return a[field] - b[field]; 
+      });
+    } else if (sortStyle === 'desc') {
+      this.data.sort((a, b) => {
+        if (typeof a[field] === 'string' && typeof b[field] === 'string') {
+          return b[field].localeCompare(a[field], ['ru', 'en'], { caseFirst: 'upper' });
+        }
+        return b[field] - a[field]; 
+      });
+    }
+  }
 
-  createHeader() {
+  createHeaderTemplate() {
     return this.headerConfig.map(el => (
       ` <div class="sortable-table__cell" data-id="${el.id}" data-sortable="${el.sortable}">
         <span>${el.title}</span>
@@ -57,23 +59,23 @@ export default class SortableTable {
     )).join(' ');
   }
 
-  createBodyCell(product, headerConfig) {
+  createBodyCellElement(product, headerConfig) {
     const fieldId = headerConfig['id'];
     return `<div class="sortable-table__cell">${product[fieldId]}</div>`;
   }
 
-  createBodyRow(product) {
+  createBodyRowElement(product) {
     return `
         <a href="/products/3d-ochki-optoma-zf2300" class="sortable-table__row">
           ${this.headerConfig.map(headerConfig =>
-    this.createBodyCell(product, headerConfig)
+    this.createBodyCellElement(product, headerConfig)
   ).join('')}
         </a>`;
   }
 
-  createBody() {
+  createBodyTemplate() {
     return this.data.map(product => (
-      this.createBodyRow(product)
+      this.createBodyRowElement(product)
     )).join('');
   }
 
@@ -82,11 +84,11 @@ export default class SortableTable {
       <div class="sortable-table">
 
     <div data-element="header" class="sortable-table__header sortable-table__row">
-      ${this.createHeader()}
+      ${this.createHeaderTemplate()}
     </div>
 
     <div data-element="body" class="sortable-table__body">
-      ${this.createBody()}
+      ${this.createBodyTemplate()}
     </div>
 
     <div data-element="loading" class="loading-line sortable-table__loading-line"></div>
