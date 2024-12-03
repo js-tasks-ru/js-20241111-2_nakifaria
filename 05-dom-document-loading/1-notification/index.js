@@ -28,15 +28,13 @@ export default class NotificationMessage {
             `);
     }
 
-    show(targetElement) {
+    show(targetElement = document.body) {
       if (NotificationMessage.lastShownComponent) {
         NotificationMessage.lastShownComponent.destroy();
       }
       NotificationMessage.lastShownComponent = this;
-
-      if (targetElement) {
-        targetElement.appendChild(this.element);
-      } else {document.body.appendChild(this.element);}
+      targetElement.appendChild(this.element);
+      
       
       setTimeout(() => {
         this.destroy(); 
