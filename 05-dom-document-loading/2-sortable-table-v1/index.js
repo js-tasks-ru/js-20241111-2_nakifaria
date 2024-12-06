@@ -23,28 +23,24 @@ export default class SortableTable {
   }
 
   sort(field, sortStyle) {
-    if (this.headerConfig.find(item => item.id === field)) {
-      this.sortElementByStyle(field, sortStyle);
+    const config = this.headerConfig.find(item => item.id === field);
+
+    if (config) {
+
+      this.sortElementByStyle(field, sortStyle, config.sortType);
     }
-    const body = this.subElements.body;
-    body.innerHTML = this.createBodyTemplate();
+    this.subElements.body.innerHTML = this.createBodyTemplate();
   }
 
-  sortElementByStyle(field, sortStyle) {
-    if (sortStyle === 'asc') {
-      this.data.sort((a, b) => {
-        if (typeof a[field] === 'string' && typeof b[field] === 'string') {
-          return a[field].localeCompare(b[field], ['ru', 'en'], { caseFirst: 'upper' });
-        }
-        return a[field] - b[field]; 
-      });
-    } else if (sortStyle === 'desc') {
-      this.data.sort((a, b) => {
-        if (typeof a[field] === 'string' && typeof b[field] === 'string') {
-          return b[field].localeCompare(a[field], ['ru', 'en'], { caseFirst: 'upper' });
-        }
-        return b[field] - a[field]; 
-      });
+  sortElementByStyle(field, sortOrder, sortType) {
+    const k = sortOrder === 'asc' ? 1 : -1;
+  
+    if (sortType === 'string') {
+      this.data.sort((a, b) => k * a[field].localeCompare(b[field], 'ru', { caseFirst: 'upper', sensitivity: 'base' }));
+    }
+  
+    if (sortType === 'number') {
+      this.data.sort((a, b) => k * (Number(a[field]) - Number(b[field])));
     }
   }
 

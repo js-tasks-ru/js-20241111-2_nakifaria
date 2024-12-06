@@ -11,6 +11,7 @@ export default class SortableTable extends SortableTableV1 {
     this.currentSortOrder = sorted.order || 'asc';
     this.isSortLocally = true;
     this.arrowElement = this.createArrowElement();
+    this.createListeners();
   }
 
   handleHeaderCellClick = (el) => {
@@ -62,11 +63,11 @@ export default class SortableTable extends SortableTableV1 {
   }  
 
   createListeners() {
-    this.subElements.header.addEventListener('click', this.handleHeaderCellClick);
+    this.subElements.header.addEventListener('pointerdown', this.handleHeaderCellClick);
   }
 
   destroyListeners() {
-    this.subElements.header.removeEventListener('click', this.handleHeaderCellClick);
+    this.subElements.header.removeEventListener('pointerdown', this.handleHeaderCellClick);
   }
 
   destroy() {
